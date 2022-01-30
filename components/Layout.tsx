@@ -1,4 +1,4 @@
-import { chakra, Flex, FlexProps } from '@chakra-ui/react'
+import { Flex, FlexProps } from '@chakra-ui/react'
 import Head from 'next/head'
 
 export const Layout = ({
@@ -10,7 +10,14 @@ export const Layout = ({
 			<Head>
 				<title>{title}</title>
 			</Head>
-			<Flex flexDir='column' w='100%' minH='100vh' {...props}>
+			<Flex
+				flexDir='column'
+				alignItems='center'
+				justifyContent='center'
+				w='100%'
+				minH='100vh'
+				{...props}
+			>
 				{props.children}
 			</Flex>
 		</>
