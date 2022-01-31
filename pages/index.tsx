@@ -1,5 +1,14 @@
-import { Container, Text } from '@chakra-ui/react'
+import {
+	Avatar,
+	Button,
+	Container,
+	Divider,
+	Flex,
+	HStack,
+	Text,
+} from '@chakra-ui/react'
 import type { NextPage } from 'next'
+import { AddBill } from '../components/AddBill'
 import { Layout } from '../components/Layout'
 
 const Home: NextPage = () => {
@@ -13,8 +22,14 @@ const Home: NextPage = () => {
 				bg='white'
 				p='4'
 				shadow='sm'
+				pos='relative'
 			>
-				<Text>Bill Tracker App</Text>
+				<Flex py='2' alignItems='center' justifyContent='space-between'>
+					<Text fontWeight='bold' fontSize='2xl'>
+						Bill Tracker App
+					</Text>
+				</Flex>
+				<AddBill />
 			</Container>
 		</Layout>
 	)
