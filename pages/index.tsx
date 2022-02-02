@@ -1,17 +1,24 @@
 import {
 	Avatar,
+	Box,
 	Button,
 	Container,
 	Divider,
 	Flex,
 	HStack,
+	Stat,
+	StatHelpText,
+	StatLabel,
+	StatNumber,
 	Text,
+	VStack,
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { AddBill } from '../components/AddBill'
 import { BillList } from '../components/BillList'
 import { Layout } from '../components/Layout'
 import { PayBill } from '../components/PayBill'
+import { getTodaysDate, getTodaysMonth } from '../utils'
 
 const Home: NextPage = () => {
 	return (
@@ -31,7 +38,19 @@ const Home: NextPage = () => {
 						Bill Tracker App
 					</Text>
 				</Flex>
-				<BillList />
+				<Text fontSize='sm' color='gray.500'>
+					{getTodaysDate()}
+				</Text>
+				<Divider my='4' />
+				<VStack alignItems='stretch' spacing={3}>
+					<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
+					<Stat alignSelf='flex-start' borderWidth={1} p={4} rounded='md'>
+						<StatLabel>Total Bills</StatLabel>
+						<StatNumber>$1000.00</StatNumber>
+					</Stat>
+					<Divider />
+					<BillList />
+				</VStack>
 				<PayBill />
 			</Container>
 		</Layout>

@@ -1,6 +1,11 @@
 import { BoxProps, HStack, Tag, Text, VStack } from '@chakra-ui/react'
 import { Bill } from '../types/bill'
-import { capitalize, formatDollar } from '../utils'
+import {
+	capitalize,
+	formatDollar,
+	getFormattedDate,
+	getRepeatColor,
+} from '../utils'
 
 const bills: Bill[] = [
 	{
@@ -50,8 +55,19 @@ const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
 	return (
 		<VStack p='4' borderWidth='1px' rounded='md' alignItems='stretch'>
 			<HStack>
-				<Text flex='1'>{bill.name}</Text>
-				<Tag>{capitalize(bill.repeat)}</Tag>
+				<HStack flex='1'>
+					<Text>{bill.name}</Text>
+					<Tag
+						colorScheme={
+							typeof window === 'object'
+								? getRepeatColor(bill.repeat)
+								: undefined
+						}
+					>
+						{capitalize(bill.repeat)}
+					</Tag>
+				</HStack>
+				<Text color='gray.500'>{getFormattedDate(bill.date)}</Text>
 			</HStack>
 			<Text color='black' fontSize='4xl' fontWeight='medium'>
 				{formatDollar(bill.amount)}

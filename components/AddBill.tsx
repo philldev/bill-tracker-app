@@ -20,12 +20,13 @@ import {
 } from '@chakra-ui/react'
 import { FC, useRef, useState } from 'react'
 import { Bill } from '../types/bill'
+import { isValidDate } from '../utils'
 
 export const AddBill: FC = () => {
 	const modal = useDisclosure()
 	return (
 		<>
-			<Button w='100%' colorScheme='green'>
+			<Button onClick={modal.onOpen} w='100%' colorScheme='green'>
 				ADD BILL
 			</Button>
 			<AddBillModal {...modal} />
@@ -40,7 +41,7 @@ const AddBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
 			<ModalContent mx='4'>
 				<ModalHeader>Add New Bill</ModalHeader>
 				<ModalCloseButton />
-				<BillForm onCancel={props.onClose} />
+				<BillForm onCancel={props.onClose} onSuccess={props.onClose} />
 			</ModalContent>
 		</Modal>
 	)
@@ -48,7 +49,9 @@ const AddBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
 
 type FormValues = Omit<Bill, 'id' | 'createdAt' | 'updatedAt'>
 
-const BillForm: FC<{ onCancel: () => void }> = (props) => {
+const BillForm: FC<{ onCancel: () => void; onSuccess: () => void }> = (
+	props
+) => {
 	const [data, setData] = useState<FormValues>({
 		name: '',
 		amount: 0,
@@ -69,6 +72,7 @@ const BillForm: FC<{ onCancel: () => void }> = (props) => {
 		if (isValid) {
 			// TODO: submit data
 			console.log(data)
+			props.onSuccess()
 		} else {
 			setErrors(errors)
 		}
@@ -82,6 +86,8 @@ const BillForm: FC<{ onCancel: () => void }> = (props) => {
 			err.name = 'Name must be at least 3 characters'
 		} else if (data.name.length > 30) {
 			err.name = 'Name must be less than 30 characters'
+		} else if (!isValidDate(data.date)) {
+			err.date = 'Date is invalid'
 		}
 		const isValid = Object.keys(err).length === 0
 		return {
@@ -137,7 +143,7 @@ const BillForm: FC<{ onCancel: () => void }> = (props) => {
 							id='date'
 							type='date'
 						/>
-						<FormErrorMessage>{errors?.amount}</FormErrorMessage>
+						<FormErrorMessage>{errors?.date}</FormErrorMessage>
 					</FormControl>
 				</VStack>
 			</ModalBody>
