@@ -14,27 +14,20 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	Select,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
 import { FC, useRef, useState } from 'react'
+import { Bill } from '../types/bill'
 
 export const AddBill: FC = () => {
 	const modal = useDisclosure()
 	return (
 		<>
-			<Flex
-				onClick={modal.onOpen}
-				p='4'
-				borderTopWidth='1px'
-				pos='absolute'
-				bottom='0'
-				insetX='0'
-			>
-				<Button w='100%' colorScheme='green'>
-					ADD BILL
-				</Button>
-			</Flex>
+			<Button w='100%' colorScheme='green'>
+				ADD BILL
+			</Button>
 			<AddBillModal {...modal} />
 		</>
 	)
@@ -53,17 +46,14 @@ const AddBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
 	)
 }
 
-type FormValues = {
-	name: string
-	amount: number
-	date: string
-}
+type FormValues = Omit<Bill, 'id' | 'createdAt' | 'updatedAt'>
 
 const BillForm: FC<{ onCancel: () => void }> = (props) => {
 	const [data, setData] = useState<FormValues>({
 		name: '',
 		amount: 0,
 		date: '',
+		repeat: 'never',
 	})
 	const [errors, setErrors] = useState<Partial<FormValues> | null>(null)
 
@@ -124,6 +114,20 @@ const BillForm: FC<{ onCancel: () => void }> = (props) => {
 							type='amount'
 						/>
 						<FormErrorMessage>{errors?.amount}</FormErrorMessage>
+					</FormControl>
+					<FormControl isInvalid={Boolean(errors?.repeat)}>
+						<FormLabel htmlFor='repeat'>repeat</FormLabel>
+						<Select
+							value={data.repeat}
+							onChange={(e) => handleChange('repeat', e.target.value)}
+							id='repeat'
+						>
+							<option value='never'>Never</option>
+							<option value='weekly'>Weekly</option>
+							<option value='monthly'>Monthly</option>
+							<option value='yearly'>Yearly</option>
+						</Select>
+						<FormErrorMessage>{errors?.repeat}</FormErrorMessage>
 					</FormControl>
 					<FormControl isInvalid={Boolean(errors?.date)}>
 						<FormLabel htmlFor='date'>Date</FormLabel>

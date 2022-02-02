@@ -9,11 +9,13 @@ import {
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { AddBill } from '../components/AddBill'
+import { BillList } from '../components/BillList'
 import { Layout } from '../components/Layout'
+import { PayBill } from '../components/PayBill'
 
 const Home: NextPage = () => {
 	return (
-		<Layout title='NEXT TEMPLATE' bg='gray.50'>
+		<Layout title='NEXT TEMPLATE' bg='gray.50' color='gray.700'>
 			<Container
 				maxW='container.sm'
 				h={['100vh', '95vh']}
@@ -29,7 +31,8 @@ const Home: NextPage = () => {
 						Bill Tracker App
 					</Text>
 				</Flex>
-				<AddBill />
+				<BillList />
+				<PayBill />
 			</Container>
 		</Layout>
 	)
