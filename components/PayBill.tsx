@@ -35,6 +35,7 @@ export const PayBill: FC = () => {
 				pos='absolute'
 				bottom='0'
 				insetX='0'
+				bg='white'
 			>
 				<Button w='100%' colorScheme='green'>
 					PAY BILL

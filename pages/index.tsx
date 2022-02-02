@@ -32,6 +32,8 @@ const Home: NextPage = () => {
 				p='4'
 				shadow='sm'
 				pos='relative'
+				display={'flex'}
+				flexDir={'column'}
 			>
 				<Flex py='2' alignItems='center' justifyContent='space-between'>
 					<Text fontWeight='bold' fontSize='2xl'>
@@ -42,7 +44,13 @@ const Home: NextPage = () => {
 					{getTodaysDate()}
 				</Text>
 				<Divider my='4' />
-				<VStack alignItems='stretch' spacing={3}>
+				<VStack
+					pb='73px'
+					flex='1'
+					overflowY='auto'
+					alignItems='stretch'
+					spacing={3}
+				>
 					<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
 					<Stat alignSelf='flex-start' borderWidth={1} p={4} rounded='md'>
 						<StatLabel>Total Bills</StatLabel>

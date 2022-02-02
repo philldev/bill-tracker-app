@@ -35,6 +35,24 @@ const bills: Bill[] = [
 		date: '2020-01-01',
 		repeat: 'monthly',
 	},
+	{
+		id: '4',
+		createdAt: '2020-01-01',
+		updatedAt: '2020-01-01',
+		name: 'Gas',
+		amount: 100,
+		date: '2020-01-01',
+		repeat: 'monthly',
+	},
+	{
+		id: '5',
+		createdAt: '2020-01-01',
+		updatedAt: '2020-01-01',
+		name: 'Groceries',
+		amount: 100,
+		date: '2020-01-01',
+		repeat: 'monthly',
+	},
 ]
 
 export const BillList = (props: { onBillClick?: (bill: Bill) => void }) => {
@@ -67,7 +85,9 @@ const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
 						{capitalize(bill.repeat)}
 					</Tag>
 				</HStack>
-				<Text color='gray.500'>{getFormattedDate(bill.date)}</Text>
+				<Text fontSize='sm' color='gray.500'>
+					{getFormattedDate(bill.date)}
+				</Text>
 			</HStack>
 			<Text color='black' fontSize='4xl' fontWeight='medium'>
 				{formatDollar(bill.amount)}
