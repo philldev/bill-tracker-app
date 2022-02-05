@@ -89,7 +89,7 @@ const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
 					{getFormattedDate(bill.date)}
 				</Text>
 			</HStack>
-			<Text color='black' fontSize='4xl' fontWeight='medium'>
+			<Text color='black' fontWeight='bold'>
 				{formatDollar(bill.amount)}
 			</Text>
 		</VStack>

@@ -1,20 +1,15 @@
 import {
-	Avatar,
-	Box,
-	Button,
 	Container,
 	Divider,
 	Flex,
 	HStack,
 	Stat,
-	StatHelpText,
 	StatLabel,
 	StatNumber,
 	Text,
 	VStack,
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { AddBill } from '../components/AddBill'
 import { BillList } from '../components/BillList'
 import { Layout } from '../components/Layout'
 import { PayBill } from '../components/PayBill'
@@ -44,18 +39,20 @@ const Home: NextPage = () => {
 					{getTodaysDate()}
 				</Text>
 				<Divider my='4' />
-				<VStack
-					pb='73px'
-					flex='1'
-					overflowY='auto'
-					alignItems='stretch'
-					spacing={3}
-				>
-					<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
-					<Stat alignSelf='flex-start' borderWidth={1} p={4} rounded='md'>
-						<StatLabel>Total Bills</StatLabel>
-						<StatNumber>$1000.00</StatNumber>
-					</Stat>
+				<VStack pb='73px' overflowY='auto' alignItems='stretch' spacing={3}>
+					<VStack alignItems='stretch'>
+						<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
+						<HStack>
+							<Stat size='sm' borderWidth={1} p={4} rounded='md'>
+								<StatLabel>Total Bills Amount</StatLabel>
+								<StatNumber>$ 1000.00</StatNumber>
+							</Stat>
+							<Stat size='sm' borderWidth={1} p={4} rounded='md'>
+								<StatLabel>Total Bills</StatLabel>
+								<StatNumber>4</StatNumber>
+							</Stat>
+						</HStack>
+					</VStack>
 					<Divider />
 					<BillList />
 				</VStack>
