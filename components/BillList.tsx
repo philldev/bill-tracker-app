@@ -1,64 +1,16 @@
-import { BoxProps, HStack, Tag, Text, VStack } from '@chakra-ui/react'
-import { Bill } from '../types/bill'
-import {
-	capitalize,
-	formatDollar,
-	getFormattedDate,
-	getRepeatColor,
-} from '../utils'
-
-const bills: Bill[] = [
-	{
-		id: '1',
-		createdAt: '2020-01-01',
-		updatedAt: '2020-01-01',
-		name: 'Electricity',
-		amount: 100,
-		date: '2020-01-01',
-		repeat: 'monthly',
-	},
-	{
-		id: '2',
-		createdAt: '2020-01-01',
-		updatedAt: '2020-01-01',
-		name: 'Water',
-		amount: 100,
-		date: '2020-01-01',
-		repeat: 'monthly',
-	},
-	{
-		id: '3',
-		createdAt: '2020-01-01',
-		updatedAt: '2020-01-01',
-		name: 'Internet',
-		amount: 1000,
-		date: '2020-01-01',
-		repeat: 'monthly',
-	},
-	{
-		id: '4',
-		createdAt: '2020-01-01',
-		updatedAt: '2020-01-01',
-		name: 'Gas',
-		amount: 100,
-		date: '2020-01-01',
-		repeat: 'monthly',
-	},
-	{
-		id: '5',
-		createdAt: '2020-01-01',
-		updatedAt: '2020-01-01',
-		name: 'Groceries',
-		amount: 100,
-		date: '2020-01-01',
-		repeat: 'monthly',
-	},
-]
+import { BoxProps, HStack, Spinner, Tag, Text, VStack } from '@chakra-ui/react'
+import { Bill } from '@prisma/client'
+import useSWR from 'swr'
+import { capitalize, formatDollar, getFormattedDate } from '../utils'
 
 export const BillList = (props: { onBillClick?: (bill: Bill) => void }) => {
+	const { data: bills, error } = useSWR<Bill[]>('/api/bills')
+
+	if (!bills) return <Spinner />
+
 	return (
 		<VStack alignItems='stretch'>
-			{bills.map((bill) => (
+			{bills!.map((bill) => (
 				<BillCard
 					onClick={() => props.onBillClick?.(bill)}
 					key={bill.id}
@@ -75,15 +27,7 @@ export const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
 			<HStack>
 				<HStack flex='1'>
 					<Text>{bill.name}</Text>
-					<Tag
-						colorScheme={
-							typeof window === 'object'
-								? getRepeatColor(bill.repeat)
-								: undefined
-						}
-					>
-						{capitalize(bill.repeat)}
-					</Tag>
+					<Tag>{capitalize(bill.repeat)}</Tag>
 				</HStack>
 				<Text fontSize='sm' color='gray.500'>
 					{getFormattedDate(bill.date)}

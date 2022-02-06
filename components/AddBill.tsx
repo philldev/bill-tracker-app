@@ -19,6 +19,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { FC, useRef, useState } from 'react'
+import { mutate } from 'swr'
 import { Bill } from '../types/bill'
 import { isValidDate } from '../utils'
 
@@ -66,13 +67,27 @@ const BillForm: FC<{ onCancel: () => void; onSuccess: () => void }> = (
 
 	const ref = useRef<HTMLFormElement | null>(null)
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const [loading, setIsLoading] = useState(false)
+
+	const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		const { isValid, errors } = validate(data)
 		if (isValid) {
-			// TODO: submit data
-			console.log(data)
-			props.onSuccess()
+			try {
+				setIsLoading(true)
+				await fetch('/api/bills/create', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data),
+				})
+				mutate('/api/bills')
+				props.onSuccess()
+			} catch (error) {
+				setIsLoading(false)
+				console.error(error)
+			}
 		} else {
 			setErrors(errors)
 		}
@@ -148,7 +163,7 @@ const BillForm: FC<{ onCancel: () => void; onSuccess: () => void }> = (
 				</VStack>
 			</ModalBody>
 			<ModalFooter>
-				<Button type='submit' colorScheme='green'>
+				<Button isLoading={loading} type='submit' colorScheme='green'>
 					CREATE
 				</Button>
 			</ModalFooter>
