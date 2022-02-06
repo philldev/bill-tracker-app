@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import db from '../../../prisma/db'
-import { isValidDate } from '../../../utils'
+import {
+	getFirstDayOfMonth,
+	getLastDayOfMonth,
+	isValidDate,
+} from '../../../utils'
 
 export default async function handler(
 	req: NextApiRequest,
@@ -17,7 +21,13 @@ export default async function handler(
 	}
 	if (req.method === 'GET') {
 		const bills = await db.bill.findMany({
-			where: { userId: session.userId as string },
+			where: {
+				userId: session.userId as string,
+				date: {
+					gte: getFirstDayOfMonth(new Date()),
+					lte: getLastDayOfMonth(new Date()),
+				},
+			},
 		})
 		return res.status(200).json(bills)
 	} else if (req.method === 'POST') {
@@ -53,7 +63,7 @@ export default async function handler(
 			data: {
 				name: req.body.name as string,
 				amount: parseInt(req.body.amount),
-				date: req.body.date as string,
+				date: new Date(req.body.date),
 				repeat: 'monthly',
 				user: {
 					connect: {

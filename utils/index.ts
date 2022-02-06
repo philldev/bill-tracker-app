@@ -36,7 +36,7 @@ export const getTodaysMonth = () => {
 }
 
 // get date in dddd, mmm dd, yyyy with Intl.DateTimeFormat from a date string
-export const getFormattedDate = (date: string) => {
+export const getFormattedDate = (date: string | Date) => {
 	const d = new Date(date)
 	return new Intl.DateTimeFormat('en-US', {
 		weekday: 'long',
@@ -60,4 +60,19 @@ export const getRepeatColors = () => {
 export const getRepeatColor = (repeat: BillRepeat) => {
 	const colors = getRepeatColors()
 	return colors[repeat]
+}
+
+// get first day of the month in date format
+export const getFirstDayOfMonth = (date: string | Date) => {
+	const d = new Date(date)
+	d.setDate(1)
+	return d
+}
+
+// get last day of the month in date format
+export const getLastDayOfMonth = (date: string | Date) => {
+	const d = new Date(date)
+	d.setMonth(d.getMonth() + 1)
+	d.setDate(0)
+	return d
 }
