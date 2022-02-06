@@ -13,10 +13,11 @@ import {
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { signIn, signOut, useSession } from 'next-auth/react'
+import useSWR from 'swr'
 import { BillList } from '../components/BillList'
 import { Layout } from '../components/Layout'
 import { PayBill } from '../components/PayBill'
-import { getTodaysDate, getTodaysMonth } from '../utils'
+import { formatDollar, getTodaysDate, getTodaysMonth } from '../utils'
 
 const Home: NextPage = () => {
 	const { data: session } = useSession()
@@ -48,26 +49,43 @@ const Home: NextPage = () => {
 					{getTodaysDate()}
 				</Text>
 				<Divider my='4' />
-				<VStack pb='73px' overflowY='auto' alignItems='stretch' spacing={3}>
-					<VStack alignItems='stretch'>
-						<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
-						<HStack>
-							<Stat size='sm' borderWidth={1} p={4} rounded='md'>
-								<StatLabel>Total Bills Amount</StatLabel>
-								<StatNumber>$ 1000.00</StatNumber>
-							</Stat>
-							<Stat size='sm' borderWidth={1} p={4} rounded='md'>
-								<StatLabel>Total Bills</StatLabel>
-								<StatNumber>4</StatNumber>
-							</Stat>
-						</HStack>
-					</VStack>
-					<Divider />
-					<BillList />
-				</VStack>
+				<Bills />
 				<PayBill />
 			</Container>
 		</Layout>
+	)
+}
+
+const Bills = () => {
+	return (
+		<VStack pb='73px' overflowY='auto' alignItems='stretch' spacing={3}>
+			<Totals />
+			<Divider />
+			<BillList />
+		</VStack>
+	)
+}
+
+const Totals = () => {
+	const { data: totals, error } = useSWR<{ count: number; total: number }>(
+		'/api/bills/get-totals'
+	)
+	const loading = !error && !totals
+	if (loading) return <Spinner />
+	return (
+		<VStack alignItems='stretch'>
+			<Text fontWeight='bold'>{getTodaysMonth()} Bills</Text>
+			<HStack>
+				<Stat size='sm' borderWidth={1} p={4} rounded='md'>
+					<StatLabel>Total Bills Amount</StatLabel>
+					<StatNumber>{formatDollar(totals!.total)}</StatNumber>
+				</Stat>
+				<Stat size='sm' borderWidth={1} p={4} rounded='md'>
+					<StatLabel>Total Bills</StatLabel>
+					<StatNumber>{totals!.count}</StatNumber>
+				</Stat>
+			</HStack>
+		</VStack>
 	)
 }
 

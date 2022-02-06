@@ -69,7 +69,7 @@ export const BillList = (props: { onBillClick?: (bill: Bill) => void }) => {
 	)
 }
 
-const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
+export const BillCard = ({ bill }: { bill: Bill } & BoxProps) => {
 	return (
 		<VStack p='4' borderWidth='1px' rounded='md' alignItems='stretch'>
 			<HStack>

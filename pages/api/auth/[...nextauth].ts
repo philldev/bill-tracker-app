@@ -15,4 +15,10 @@ export default NextAuth({
 		}),
 		// ...add more providers here
 	],
+	callbacks: {
+		session: async ({ user, session }) => {
+			session.userId = user.id
+			return session
+		},
+	},
 })
