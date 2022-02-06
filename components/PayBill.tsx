@@ -47,6 +47,9 @@ export const PayBill: FC = () => {
 }
 
 const PayBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
+	const onAddBillSuccess = () => {
+		props.onClose()
+	}
 	return (
 		<Modal isCentered size='full' isOpen={props.isOpen} onClose={props.onClose}>
 			<ModalOverlay />
@@ -55,7 +58,7 @@ const PayBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
 				<ModalCloseButton />
 				<ModalBody>
 					<VStack alignItems='stretch' spacing={4}>
-						<AddBill />
+						<AddBill onClose={props.onClose} onSuccess={onAddBillSuccess} />
 						<Text>Or pay from past bills</Text>
 						<BillList />
 					</VStack>

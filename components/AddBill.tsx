@@ -23,26 +23,36 @@ import { mutate } from 'swr'
 import { Bill } from '../types/bill'
 import { isValidDate } from '../utils'
 
-export const AddBill: FC = () => {
+export const AddBill: FC<{ onClose: () => void; onSuccess: () => void }> = (
+	props
+) => {
 	const modal = useDisclosure()
+	const onSuccess = () => {
+		modal.onClose()
+		props.onSuccess()
+	}
 	return (
 		<>
 			<Button onClick={modal.onOpen} w='100%' colorScheme='green'>
 				ADD BILL
 			</Button>
-			<AddBillModal {...modal} />
+			<AddBillModal {...modal} onSuccess={onSuccess} />
 		</>
 	)
 }
 
-const AddBillModal: FC<{ isOpen: boolean; onClose: () => void }> = (props) => {
+const AddBillModal: FC<{
+	isOpen: boolean
+	onClose: () => void
+	onSuccess: () => void
+}> = (props) => {
 	return (
 		<Modal isCentered isOpen={props.isOpen} onClose={props.onClose}>
 			<ModalOverlay />
 			<ModalContent mx='4'>
 				<ModalHeader>Add New Bill</ModalHeader>
 				<ModalCloseButton />
-				<BillForm onCancel={props.onClose} onSuccess={props.onClose} />
+				<BillForm onCancel={props.onClose} onSuccess={props.onSuccess} />
 			</ModalContent>
 		</Modal>
 	)
@@ -75,7 +85,7 @@ const BillForm: FC<{ onCancel: () => void; onSuccess: () => void }> = (
 		if (isValid) {
 			try {
 				setIsLoading(true)
-				await fetch('/api/bills/create', {
+				await fetch('/api/bills', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
