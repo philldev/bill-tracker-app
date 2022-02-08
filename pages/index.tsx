@@ -61,7 +61,7 @@ const Bills = () => {
 		<VStack pb='73px' overflowY='auto' alignItems='stretch' spacing={3}>
 			<Totals />
 			<Divider />
-			<BillList />
+			<BillList billModal />
 		</VStack>
 	)
 }
