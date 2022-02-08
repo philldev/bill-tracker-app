@@ -76,3 +76,9 @@ export const getLastDayOfMonth = (date: string | Date) => {
 	d.setDate(0)
 	return d
 }
+
+// get yyyy-mm-dd from a date string or date object or string
+export const getDateString = (date: string | Date) => {
+	const d = new Date(date)
+	return d.toISOString().split('T')[0]
+}

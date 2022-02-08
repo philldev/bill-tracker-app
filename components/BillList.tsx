@@ -1,6 +1,13 @@
 import {
 	BoxProps,
 	Button,
+	Drawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerOverlay,
 	HStack,
 	Modal,
 	ModalBody,
@@ -17,9 +24,10 @@ import {
 } from '@chakra-ui/react'
 import { Bill } from '@prisma/client'
 import { FC } from 'react'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { capitalize, formatDollar, getFormattedDate } from '../utils'
 import { AddBill } from './AddBill'
+import { BillForm } from './BillForm'
 
 export const BillList = (props: {
 	onBillClick?: (bill: Bill) => void
@@ -66,7 +74,6 @@ export const BillCard = ({
 				<HStack>
 					<HStack flex='1'>
 						<Text>{bill.name}</Text>
-						<Tag>{capitalize(bill.repeat)}</Tag>
 					</HStack>
 					<Text fontSize='xs' textAlign={'right'} color='gray.500'>
 						{getFormattedDate(bill.date)}
@@ -86,23 +93,48 @@ const BillDetailModal: FC<{
 	onClose: () => void
 	bill: Bill
 }> = (props) => {
+	const editBillModal = useDisclosure()
 	return (
-		<Modal isCentered isOpen={props.isOpen} onClose={props.onClose}>
-			<ModalOverlay />
-			<ModalContent>
-				<ModalHeader>Bill Detail</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody>
+		<Drawer placement='bottom' isOpen={props.isOpen} onClose={props.onClose}>
+			<DrawerOverlay />
+			<DrawerContent>
+				<DrawerHeader>Bill Detail</DrawerHeader>
+				<DrawerCloseButton />
+				<DrawerBody>
 					<BillCard bill={props.bill} />
-				</ModalBody>
-				<ModalFooter>
+				</DrawerBody>
+				<DrawerFooter>
 					<HStack>
-						<Button variant={'outline'} colorScheme='red' size='sm'>
+						<Button
+							onClick={async () => {
+								await fetch('/api/bills/' + props.bill.id, {
+									method: 'DELETE',
+									headers: {
+										'Content-Type': 'application/json',
+									},
+								})
+								mutate('/api/bills')
+								props.onClose()
+							}}
+							variant={'outline'}
+							colorScheme='red'
+							size='sm'
+						>
 							Delete
 						</Button>
-						<Button variant={'outline'} size='sm'>
+						<Button
+							onClick={editBillModal.onOpen}
+							variant={'outline'}
+							size='sm'
+						>
 							Edit
 						</Button>
+						<EditBillModal
+							bill={props.bill}
+							onCancel={editBillModal.onClose}
+							onSuccess={editBillModal.onClose}
+							{...editBillModal}
+						/>
 					</HStack>
 					<Button
 						onClick={props.onClose}
@@ -112,7 +144,30 @@ const BillDetailModal: FC<{
 					>
 						Back
 					</Button>
-				</ModalFooter>
+				</DrawerFooter>
+			</DrawerContent>
+		</Drawer>
+	)
+}
+
+const EditBillModal: FC<{
+	onCancel: () => void
+	onSuccess: () => void
+	isOpen: boolean
+	onClose: () => void
+	bill: Bill
+}> = (props) => {
+	return (
+		<Modal isCentered isOpen={props.isOpen} onClose={props.onClose}>
+			<ModalOverlay />
+			<ModalContent>
+				<ModalHeader>Edit Bill</ModalHeader>
+				<ModalCloseButton />
+				<BillForm
+					onCancel={props.onCancel}
+					onSuccess={props.onSuccess}
+					initialValue={props.bill}
+				/>
 			</ModalContent>
 		</Modal>
 	)
